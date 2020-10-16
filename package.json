@@ -14,6 +14,10 @@
     "iframe"
   ],
   "description": "Wrapper for YouTube IFrame Player API",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NomNes/vue3-youtube"
+  },
   "main": "dist/vue3-youtube.common.js",
   "module": "dist/vue3-youtube.umd.js",
   "unpkg": "dist/vue3-youtube.umd.min.js",

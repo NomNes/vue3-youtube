@@ -1,0 +1,9 @@
+.git
+.idea
+src
+node_modules
+vue.config.js
+.eslintrc.js
+.gitignore
+babel.config.js
+tsconfig.json
