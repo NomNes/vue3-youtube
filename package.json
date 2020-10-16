@@ -1,6 +1,6 @@
 {
   "name": "vue3-youtube",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": {
     "name": "Nikita Umnov",
     "email": "nomnes1990@gmail.com"
@@ -23,7 +23,10 @@
   "unpkg": "dist/vue3-youtube.umd.min.js",
   "jsdelivr": "dist/vue3-youtube.umd.min.js",
   "browser": "dist/vue3-youtube.umd.min.js",
-  "types": "dist/YouTube.d.ts",
+  "typings": "dist/YouTube.vue.d.ts",
+  "typescript": {
+    "definition": "dist/YouTube.vue.d.ts"
+  },
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --target lib src/YouTube.vue && rm ./dist/demo.html ./dist/main.d.ts",
