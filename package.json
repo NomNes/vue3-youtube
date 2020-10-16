@@ -6,9 +6,10 @@
   "unpkg": "dist/vue3-youtube.umd.min.js",
   "jsdelivr": "dist/vue3-youtube.umd.min.js",
   "browser": "dist/vue3-youtube.umd.min.js",
+  "types": "dist/YouTube.d.ts",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --target lib src/YouTube.vue",
+    "build": "vue-cli-service build --target lib src/YouTube.vue && rm ./dist/demo.html ./dist/main.d.ts",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
