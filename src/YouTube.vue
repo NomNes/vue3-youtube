@@ -4,17 +4,12 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
+import getYouTubeID from 'get-youtube-id'
 
 interface Window {
   onYouTubeIframeAPIReadyResolvers?: { (): void }[]
   onYouTubeIframeAPIReady?: { (): void }
 }
-
-const re = [
-  /^(https:\/\/www\.youtube\.com\/watch\?v=)(.*?)(&.*?)?$/,
-  /^(https:\/\/www\.youtu\.be\/)(.*?)(\?.*?)?$/,
-  /^(https:\/\/www\.youtube\.com\/embed\/)(.*?)(\?.*?)?$/,
-]
 
 type SVQ = YT.SuggestedVideoQuality
 
@@ -37,15 +32,7 @@ export default defineComponent({
   },
   computed: {
     id(): string {
-      let id = this.src
-      re.some((r) => {
-        if (r.test(this.src)) {
-          id = this.src.replace(r, '$2')
-          return true
-        }
-        return false
-      })
-      return id
+      return getYouTubeID(this.src) || this.src
     },
   },
   data() {

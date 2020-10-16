@@ -1,6 +1,19 @@
 {
   "name": "vue3-youtube",
   "version": "0.1.0",
+  "author": {
+    "name": "Nikita Umnov",
+    "email": "nomnes1990@gmail.com"
+  },
+  "license": "MIT",
+  "keywords": [
+    "vue",
+    "vue3",
+    "youtube",
+    "API",
+    "iframe"
+  ],
+  "description": "Wrapper for YouTube IFrame Player API",
   "main": "dist/vue3-youtube.common.js",
   "module": "dist/vue3-youtube.umd.js",
   "unpkg": "dist/vue3-youtube.umd.min.js",
@@ -15,6 +28,7 @@
   "dependencies": {
     "@types/youtube": "^0.0.39",
     "core-js": "^3.6.5",
+    "get-youtube-id": "^1.0.1",
     "vue": "^3.0.0"
   },
   "devDependencies": {
