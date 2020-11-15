@@ -14,6 +14,7 @@ interface Window {
 type SVQ = YT.SuggestedVideoQuality
 
 export default defineComponent({
+  name: 'YouTube',
   props: {
     src: {
       type: String as PropType<string>,
@@ -69,7 +70,25 @@ export default defineComponent({
         })
       }
     }
-    this.promise.then(() => {
+    this.promise.then(() => this.initPlayer())
+    const id = 'youtube-iframe-js-api-script'
+    let tag = document.getElementById(id) as HTMLScriptElement
+    if (!tag) {
+      // eslint-disable-next-line no-unused-expressions
+      (window as Window).onYouTubeIframeAPIReadyResolvers?.push(this.resolver)
+      tag = document.createElement('script')
+      tag.id = id
+      tag.src = 'https://www.youtube.com/iframe_api'
+      const firstScriptTag = document.getElementsByTagName('script')[0]
+      if (firstScriptTag && firstScriptTag.parentNode) {
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag)
+      }
+    } else {
+      this.resolver()
+    }
+  },
+  methods: {
+    initPlayer(): void {
       this.initiated = true
       // eslint-disable-next-line no-undef
       this.player = new YT.Player(this.$el, {
@@ -89,24 +108,7 @@ export default defineComponent({
           onApiChange: (e) => this.$emit('api-change', e),
         },
       })
-    })
-    const id = 'youtube-iframe-js-api-script'
-    let tag = document.getElementById(id) as HTMLScriptElement
-    if (!tag) {
-      // eslint-disable-next-line no-unused-expressions
-      (window as Window).onYouTubeIframeAPIReadyResolvers?.push(this.resolver)
-      tag = document.createElement('script')
-      tag.id = id
-      tag.src = 'https://www.youtube.com/iframe_api'
-      const firstScriptTag = document.getElementsByTagName('script')[0]
-      if (firstScriptTag && firstScriptTag.parentNode) {
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag)
-      }
-    } else {
-      this.resolver()
-    }
-  },
-  methods: {
+    },
     /**
      * Queues a video by ID.
      *
@@ -393,6 +395,11 @@ export default defineComponent({
     },
     height() {
       this.player?.setSize(+this.width, +this.height)
+    },
+    src() {
+      if (this.initiated && this.player) {
+        this.player.loadVideoById(this.id)
+      }
     },
   },
   beforeUnmount() {
