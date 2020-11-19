@@ -1,5 +1,7 @@
 <template>
-  <div></div>
+  <div :style="wrapperStyle">
+    <div ref="youtube" :style="iframeStyle"></div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -35,6 +37,13 @@ export default defineComponent({
     id(): string {
       return getYouTubeID(this.src) || this.src
     },
+    wrapperStyle(): Record<string, string> {
+      return {
+        width: `${this.width}px`,
+        height: `${this.height}px`,
+        position: 'relative',
+      }
+    },
   },
   data() {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -49,12 +58,20 @@ export default defineComponent({
       player: null | YT.Player
       initiated: boolean
       ready: boolean
+      iframeStyle: Record<string, string>
     } = {
       promise,
       resolver,
       player: null,
       initiated: false,
       ready: false,
+      iframeStyle: {
+        position: 'absolute',
+        top: '0',
+        left: '0',
+        width: '100%',
+        height: '100%',
+      },
     }
     return data
   },
@@ -91,7 +108,7 @@ export default defineComponent({
     initPlayer(): void {
       this.initiated = true
       // eslint-disable-next-line no-undef
-      this.player = new YT.Player(this.$el, {
+      this.player = new YT.Player(this.$refs.youtube as HTMLElement, {
         height: this.height,
         width: this.width,
         videoId: this.id,
@@ -407,7 +424,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style scoped>
-
-</style>
