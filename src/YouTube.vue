@@ -252,14 +252,14 @@ export default defineComponent({
      * Mutes the player.
      */
     mute(): void {
-      this.player?.previousVideo()
+      this.player?.mute()
     },
 
     /**
      * Unmutes the player.
      */
     unMute(): void {
-      this.player?.previousVideo()
+      this.player?.unMute()
     },
 
     /**
