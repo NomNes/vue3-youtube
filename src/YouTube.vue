@@ -1,6 +1,6 @@
 <template>
   <div :style="wrapperStyle">
-    <div ref="youtube" :style="iframeStyle"></div>
+    <div ref="youtube" :style="wrapperStyle"></div>
   </div>
 </template>
 
@@ -13,9 +13,19 @@ interface Window {
   onYouTubeIframeAPIReady?: { (): void }
 }
 
-type SVQ = YT.SuggestedVideoQuality
+export const PlayerState = {
+  UNSTARTED: -1,
+  ENDED: 0,
+  PLAYING: 1,
+  PAUSED: 2,
+  BUFFERING: 3,
+  CUED: 5,
+}
 
-export default defineComponent({
+export type SuggestedVideoQuality = YT.SuggestedVideoQuality
+export type PlayerVars = YT.PlayerVars
+
+const YouTube = defineComponent({
   name: 'YouTube',
   props: {
     src: {
@@ -31,7 +41,7 @@ export default defineComponent({
       default: 640,
     },
     host: String as PropType<string>,
-    vars: Object as PropType<YT.PlayerVars>,
+    vars: Object as PropType<PlayerVars>,
   },
   computed: {
     id(): string {
@@ -116,7 +126,7 @@ export default defineComponent({
         events: {
           onReady: (e) => {
             this.ready = true
-            this.$emit('ready', e)
+            setTimeout(() => this.$emit('ready', e))
           },
           onStateChange: (e) => this.$emit('state-change', e),
           onPlaybackQualityChange: (e) => this.$emit('playback-quality-change', e),
@@ -133,7 +143,7 @@ export default defineComponent({
      * @param startSeconds   Time from which the video should start playing.
      * @param suggestedQuality   Suggested video player quality.
      */
-    cueVideoById(videoId: string, startSeconds?: number, suggestedQuality?: SVQ): void {
+    cueVideoById(videoId: string, startSeconds?: number, suggestedQuality?: SuggestedVideoQuality): void {
       this.player?.cueVideoById(videoId, startSeconds, suggestedQuality)
     },
 
@@ -144,7 +154,7 @@ export default defineComponent({
      * @param startSeconds   Time from which the video should start playing.
      * @param suggestedQuality   Suggested video player quality.
      */
-    loadVideoById(videoId: string, startSeconds?: number, suggestedQuality?: SVQ): void {
+    loadVideoById(videoId: string, startSeconds?: number, suggestedQuality?: SuggestedVideoQuality): void {
       this.player?.loadVideoById(videoId, startSeconds, suggestedQuality)
     },
 
@@ -155,7 +165,7 @@ export default defineComponent({
      * @param startSeconds   Time from which the video should start playing.
      * @param suggestedQuality   Suggested video player quality.
      */
-    cueVideoByUrl(mediaContentUrl: string, startSeconds?: number, suggestedQuality?: SVQ): void {
+    cueVideoByUrl(mediaContentUrl: string, startSeconds?: number, suggestedQuality?: SuggestedVideoQuality): void {
       this.player?.cueVideoByUrl(mediaContentUrl, startSeconds, suggestedQuality)
     },
 
@@ -166,7 +176,7 @@ export default defineComponent({
      * @param startSeconds   Time from which the video should start playing.
      * @param suggestedQuality   Suggested video player quality.
      */
-    loadVideoByUrl(mediaContentUrl: string, startSeconds?: number, suggestedQuality?: SVQ): void {
+    loadVideoByUrl(mediaContentUrl: string, startSeconds?: number, suggestedQuality?: SuggestedVideoQuality): void {
       this.player?.loadVideoByUrl(mediaContentUrl, startSeconds, suggestedQuality)
     },
 
@@ -178,7 +188,12 @@ export default defineComponent({
      * @param startSeconds   Time from which the video should start playing.
      * @param suggestedQuality   Suggested video player quality.
      */
-    cuePlaylist(playlist: string | string[], index?: number, startSeconds?: number, suggestedQuality?: SVQ): void {
+    cuePlaylist(
+      playlist: string | string[],
+      index?: number,
+      startSeconds?: number,
+      suggestedQuality?: SuggestedVideoQuality,
+    ): void {
       this.player?.cuePlaylist(playlist, index, startSeconds, suggestedQuality)
     },
 
@@ -190,7 +205,12 @@ export default defineComponent({
      * @param startSeconds   Time from which the video should start playing.
      * @param suggestedQuality   Suggested video player quality.
      */
-    loadPlaylist(playlist: string | string[], index?: number, startSeconds?: number, suggestedQuality?: SVQ): void {
+    loadPlaylist(
+      playlist: string | string[],
+      index?: number,
+      startSeconds?: number,
+      suggestedQuality?: SuggestedVideoQuality,
+    ): void {
       this.player?.loadPlaylist(playlist, index, startSeconds, suggestedQuality)
     },
 
@@ -229,7 +249,7 @@ export default defineComponent({
      * Loads and plays the next video in the playlist.
      */
     nextVideo(): void {
-      this.player?.stopVideo()
+      this.player?.nextVideo()
     },
 
     /**
@@ -323,7 +343,7 @@ export default defineComponent({
      * @param shufflePlaylist   Whether to shuffle playlist videos.
      */
     setShuffle(shufflePlaylist: boolean): void {
-      this.player?.setLoop(shufflePlaylist)
+      this.player?.setShuffle(shufflePlaylist)
     },
 
     /**
@@ -338,7 +358,7 @@ export default defineComponent({
      */
     getPlayerState(): YT.PlayerState {
       // eslint-disable-next-line no-undef
-      return this.player ? this.player.getPlayerState() : YT.PlayerState.UNSTARTED
+      return this.player ? this.player.getPlayerState() : PlayerState.UNSTARTED
     },
 
     /**
@@ -351,7 +371,7 @@ export default defineComponent({
     /**
      * @returns Actual video quality of the current video.
      */
-    getPlaybackQuality(): SVQ {
+    getPlaybackQuality(): SuggestedVideoQuality {
       return this.player ? this.player.getPlaybackQuality() : 'default'
     },
 
@@ -360,14 +380,14 @@ export default defineComponent({
      *
      * @param suggestedQuality   Suggested video quality for the current video.
      */
-    setPlaybackQuality(suggestedQuality: SVQ): void {
+    setPlaybackQuality(suggestedQuality: SuggestedVideoQuality): void {
       this.player?.setPlaybackQuality(suggestedQuality)
     },
 
     /**
      * @returns Quality formats in which the current video is available.
      */
-    getAvailableQualityLevels(): SVQ[] {
+    getAvailableQualityLevels(): SuggestedVideoQuality[] {
       return this.player ? this.player.getAvailableQualityLevels() : []
     },
 
@@ -423,4 +443,8 @@ export default defineComponent({
     this.player?.destroy()
   },
 })
+
+export type Methods = (typeof YouTube)['methods']
+
+export default YouTube
 </script>
