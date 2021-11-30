@@ -41,9 +41,9 @@ const YouTube = defineComponent({
       default: 640,
     },
     host: {
-        type: String as PropType<string>,
-        default: 'https://www.youtube.com',
-      },
+      type: String as PropType<string>,
+      default: 'https://www.youtube.com',
+    },
     vars: Object as PropType<PlayerVars>,
   },
   computed: {
