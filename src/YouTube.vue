@@ -1,6 +1,6 @@
 <template>
-  <div :style="wrapperStyle">
-    <div ref="youtube" :style="wrapperStyle"></div>
+  <div :style="responsive ? undefined : wrapperStyle">
+    <div ref="youtube" :style="iframeStyle"></div>
   </div>
 </template>
 
@@ -40,6 +40,10 @@ const YouTube = defineComponent({
       type: [Number, String] as PropType<number | string>,
       default: 640,
     },
+    responsive: {
+      type: Boolean as PropType<boolean>,
+      default: false,
+    },
     host: {
       type: String as PropType<string>,
       default: 'https://www.youtube.com',
@@ -57,6 +61,15 @@ const YouTube = defineComponent({
         position: 'relative',
       }
     },
+    iframeStyle(): Record<string, string> {
+      if (this.responsive) {
+        return {
+          'aspect-ratio': '16 / 9',
+          width: '100%',
+        }
+      }
+      return this.wrapperStyle
+    },
   },
   data() {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -71,20 +84,13 @@ const YouTube = defineComponent({
       player: null | YT.Player
       initiated: boolean
       ready: boolean
-      iframeStyle: Record<string, string>
+
     } = {
       promise,
       resolver,
       player: null,
       initiated: false,
       ready: false,
-      iframeStyle: {
-        position: 'absolute',
-        top: '0',
-        left: '0',
-        width: '100%',
-        height: '100%',
-      },
     }
     return data
   },
@@ -122,8 +128,8 @@ const YouTube = defineComponent({
       this.initiated = true
       // eslint-disable-next-line no-undef
       this.player = new YT.Player(this.$refs.youtube as HTMLElement, {
-        height: this.height,
-        width: this.width,
+        height: this.responsive ? 0 : this.height,
+        width: this.responsive ? 0 : this.width,
         videoId: this.id,
         host: this.host,
         playerVars: this.vars,
