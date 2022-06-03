@@ -50,6 +50,7 @@ export default defineComponent({
 | src    | String         |         | Youtube video link or ID. Required.                                                      |
 | width  | Number, String | 640     | Player width.                                                                            |
 | height | Number, String | 360     | Player height.                                                                           |
+| responsive | Boolean  | false     | Scales player to full width in a 16/9 aspect ratio. Ignores width and height setting.                                                                          |
 | host   | String         |         | Points host to correct origin for CORS.                                                  |
 | vars   | Object         |         | [Player parameters](https://developers.google.com/youtube/player_parameters#Parameters). |
 
